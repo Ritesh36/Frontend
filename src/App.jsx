@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import "prismjs/themes/prism-okaidia.css"
 import prism from 'prismjs'
@@ -9,27 +9,26 @@ import rehypeHighlight from 'rehype-highlight'
 import 'highlight.js/styles/atom-one-dark.css'
 
 function App() {
-  const [count, setCount] = useState(0)
   const [code, setCode] = useState(`function App() {
   return 1+2
 }`)
+  const [review, setReview] = useState('');
+  const [error, setError] = useState('');
 
-const [review, setReview] = useState('');
+  useEffect(() => {
+    prism.highlightAll()
+  }, [code]) // Highlight when code changes
 
-useEffect(() => {
-  prism.highlightAll()
-}, [])
-
-async function reviewCode() {
-  try {
-    const response = await axios.post('https://ai-code-reviewer-kl4u.onrender.com/get-review', { code });
-    setReview(response.data);
-  } catch (error) {
-    console.error('Error reviewing code:', error);
+  async function reviewCode() {
+    try {
+      setError('');
+      const response = await axios.post('https://ai-code-reviewer-kl4u.onrender.com/get-review', { code });
+      setReview(response.data);
+    } catch (error) {
+      setError('Error reviewing code.');
+      console.error('Error reviewing code:', error);
+    }
   }
-}
-
-
 
   return (
     <>
@@ -52,17 +51,15 @@ async function reviewCode() {
               }}
             />
           </div>
-          <div className="review" onClick={reviewCode}>Review</div>
+          <button className="review" onClick={reviewCode}>Review</button>
+          {error && <div className="error">{error}</div>}
         </div>
         <div className="right">
-          <Markdown
-            rehypePlugins={[rehypeHighlight]}
-            >{review}</Markdown>
+          <Markdown rehypePlugins={[rehypeHighlight]}>{review}</Markdown>
         </div>
       </main>
     </>
   )
 }
-
 
 export default App
