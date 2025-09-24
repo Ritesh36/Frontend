@@ -22,7 +22,7 @@ function App() {
   async function reviewCode() {
     try {
       setError('');
-      const response = await axios.post('https://ai-code-reviewer-kl4u.onrender.com/get-review', { code });
+      const response = await axios.post('https://ai-code-reviewer-kl4u.onrender.com/ai/review', { code });
       setReview(response.data);
     } catch (error) {
       setError('Error reviewing code.');
