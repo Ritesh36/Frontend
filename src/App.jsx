@@ -28,7 +28,7 @@ function App() {
     try {
       const apiUrl =
         import.meta.env.VITE_API_URL ||
-        "https://ai-code-reviewer-kl4u.onrender.com";
+        "https://reviewbot-ai.onrender.com";
       const response = await axios.post(`${apiUrl}/ai/review`, { code });
       setReview(response.data);
     } catch (error) {
